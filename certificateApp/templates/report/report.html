@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<nav class="bg-light">
+    <ul class="nav nav-tabs px-5 pt-4">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'certificate_app:personal_detail' %}">Personal Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'certificate_app:project' %}">Projects Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'certificate_app:report' %}">Report Details</a>
+        </li>
+        <div class="ml-auto d-flex">
+            <li class="nav-item px-1"><strong class="nav-link">Hi {{request.user.userprofile.get_full_name}}</strong>
+            </li>
+            <li class="nav-item px-1"><a class="nav-link" href="{% url 'logout' %}">signout</a></li>
+        </div>
+    </ul>
+</nav>
+<div class="container my-3">
+    {% if request.user.report %}
+    <div class="bg-light p-md-4 p-2">
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Report Name</strong></div>
+            <div class="col-8 align-self-center">
+                {{request.user.report.project_name}}
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Report Url</strong></div>
+            <div class="col-8 align-self-center">
+                <a class="text-break"
+                    href="{{request.user.report.upload_report.url}}">{{request.user.report.upload_report.url}}</a>
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Status</strong></div>
+            <div class="col-8 align-self-center">
+                {{request.user.report.get_status_display}}
+            </div>
+        </div>
+        {% if request.user.report.status == 'R' %}
+        <a class="btn btn-sm btn-dark ml-sm-5 mt-sm-4 mt-2" href="{% url 'certificate_app:reportupdate' %}">Update report</a>
+        {% elif request.user.report.status == 'A' and request.user.certificate %}
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Certificate Generated</strong></div>
+            <div class="col-8 align-self-center">
+                <a href="{{request.user.certificate.certificate_pdf.url}}">Download Certificate</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="mx-auto" style="max-width: 550px;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3 row">
+                {{ form.project_name.errors }}
+                <label for="{{ form.project_name.id_for_label }}" class="col-sm-3 col-form-label">Project Name :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" name="project_name" maxlength="100" required=""
+                        id="id_project_name">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{ form.upload_report.errors }}
+                <label for="{{ form.project_name.id_for_label }}" class="col-sm-3 col-form-label">Upload Report
+                    :</label>
+                <input class="col-sm-9" type="file" name="upload_report" required="" id="id_upload_report">
+            </div>
+            <button class="btn btn-sm btn-primary" type="submit">submit</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

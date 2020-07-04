@@ -1,0 +1,11 @@
+{% extends 'index.html' %}
+{% load static %}
+
+
+{% block content %}
+	<form method="POST" id='register' class='shadow'>
+		{% csrf_token %}
+		{{ form.as_p }}		
+		<input type="submit" name="Register" value='Register' class='px-3 mt-3 btn btn-outline-primary'>
+	</form>
+{% endblock %}

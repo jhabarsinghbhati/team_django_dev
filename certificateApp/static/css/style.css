@@ -1,0 +1,25 @@
+/*register form*/
+
+
+#register {
+	width: 50%;
+	margin: 20px auto;
+	padding: 3rem;
+	box-shadow: 0 0 10px 10px rgba(0, 0, 0, .1);
+}
+
+#register label {
+	font-weight: bold;
+}
+
+@media (max-width: 900px ) {
+	#register {
+		width: 80%;
+	}
+}
+
+@media (max-width: ) {
+	#register {
+		width: 80%;
+	}
+}

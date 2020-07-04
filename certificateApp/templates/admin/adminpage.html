@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="navbar navbar-expand-lg navbar-light bg-light mb-2">
+        <div class="container-fluid">
+            <h3>Internship Details and Certificate</h3>
+            <!-- <div class="collapse navbar-collapse"> -->
+            <!-- <ul class="navbar-nav mr-auto mb-2 mb-lg-0"></ul> -->
+            <div class="ml-auto d-flex">
+                <ul class="navbar-nav">
+                    <li class="nav-item px-1"><strong class="nav-link">Hi
+                            {{request.user.userprofile.get_full_name}}</strong></li>
+                    <li class="nav-item px-1"><a class="nav-link" href="{% url 'logout' %}">signout</a></li>
+                </ul>
+            </div>
+            <!-- </div> -->
+        </div>
+    </div>
+    <div class="bg-light p-5 rounded">
+        <form class="row row-cols-md-auto g-3 align-items-center">
+            <div class="col-12">
+                <select class="form-select" aria-label="Default select example" id="select" onchange="selectType()">
+                    <option selected value='1'>search Intern by</option>
+                    <option value="first_name">First Name</option>
+                    <option value="last_name">Last Name</option>
+                    <option value="reg_number">Registration Number</option>
+                    <option value="days_from_now">Internship ending within days from now</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <input placeholder="All" disabled class="form-control" type="text" name="" id="searchfield" min="0">
+            </div>
+            <div class="col-12">
+                <button class='btn btn-sm btn-primary' type="submit">search</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="table-responsive bg-light mt-3 px-1">
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Details</th>
+                <th scope="col">Reg. No.</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Mentor</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Report</th>
+                <th scope="col">Marked status</th>
+                <th scope="col">Certificate Generated</th>
+                <th scope="col">Certificate Serial No.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in user %}
+            <tr>
+                <th scope="row">{{forloop.counter}}.</th>
+                <td><a style="cursor: pointer;" class="text-decoration-none" data-toggle="modal"
+                        data-target="#exampleModal{{u.id}}">view</a></td>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal{{u.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" style="max-width: 90%;">
+                        <div class="modal-content mb-4">
+                            <div class="modal-header bg-light p-3">
+                                <!-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> -->
+                                <h5 class="modal-title">Intern details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body{{u.id}}">
+                                <div>
+                                    {% include 'admin/interniframe.html' with user=u project=u.project report=u.report details=u.personaldetail %}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% comment %}
+                <script>
+                    var myModal = document.getElementById('exampleModal{{u.id}}')
+
+                    myModal.addEventListener('shown.bs.modal', function () {
+                        $.ajax({
+                            url: "{% url 'certificate_app:interndetail' u.id %}",
+                            success: (data) => {
+                                $('.modal-body{{u.id}}').append(data)
+                            }
+                        });
+                    })
+                </script> {% endcomment %}
+
+                <td>{{u.userprofile.registration_number}}</td>
+                <td>{{u.userprofile.first_name}}</td>
+                <td>{{u.userprofile.last_name}}</td>
+                <td>{{u.project.mentor_or_leader}}</td>
+                <td>{{u.project.joining_date}}</td>
+                <td>{{u.project.end_date}}</td>
+                {% if u.report %}
+                <td>Submitted</td>
+                <td id="page-status{{u.id}}">{{u.report.get_status_display}}</td>
+                {% else %}
+                <td>Not Submitted</td>
+                <td>-</td>
+                {% endif %}
+
+                {% if u.certificate %}
+                <td>yes</td>
+                <td><a class="text-decoration-none"
+                        href="{{u.certificate.certificate_pdf.url}}" target="_blank">{{u.certificate.certificate_number}}</a></td>
+                {% else %}
+                <td id="certificate-generated{{u.id}}">No</td>
+                <td id="certificate-number{{u.id}}">-</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if not user %}
+    <h2>No search results.</h2>
+    {% endif %}
+</div>
+<script>
+    function selectType() {
+        var option = document.getElementById('select')
+        var searchfield = document.getElementById('searchfield')
+        searchfield.name = option.value
+        if (option.value == 'days_from_now') {
+            searchfield.type = 'number'
+            searchfield.placeholder = 'days'
+        }
+        else {
+            searchfield.type = 'text'
+            searchfield.placeholder = option.options[option.selectedIndex].text
+        }
+        if (option.value == '1') {
+            searchfield.disabled = true
+            searchfield.placeholder = 'All'
+        }
+        else searchfield.disabled = false
+    }
+    function changestatus(self, url, id, ckturl) {
+        self = $(self)
+        self.children('span').show()
+        $.ajax({
+            url: url,
+            success: (data) => {
+                self.children('span').hide()
+                // console.log(data,self.text())
+                if (self.text().trim() == 'Approve') {
+                    $(`#status${id}`).text('Approved')
+                    $('.statuschange').hide('normal')
+                    var btn = `<button class="btn btn-success mx-5"onclick="generatecertificate(this,'${ckturl}',${id})"><span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true" style="display: none;"></span>Generate Certificate</button>`
+                    $('.statuschange').parent().append(btn).hide().show('normal')
+
+                    $(`#page-status${id}`).text('Approved')
+                } else {
+                    $(`#status${id}`).text('Rejected')
+                    $('.statuschange').hide('normal')
+                    $(`#page-status${id}`).text('Rejected')
+                }
+            },
+            error: (data) => {
+                self.children('span').hide()
+                console.log('something went wrong', data)
+                try{
+                    message = data['responseJSON']['message']
+                }
+                catch(err){
+                    message = 'Something went wrong kindly contact admin.'
+                }
+                message = $(`<div class="text-danger text-center px-sm-5 mt-2">${message}</div>`)
+                console.log(message)
+                message.insertAfter('#statusdiv').show('normal')
+            }
+        })
+    }
+    var test
+    function generatecertificate(self, url, id) {
+        self = $(self)
+        self.children('span').show()
+        $.ajax({
+            url: url,
+            success: (data) => {
+                self.children('span').hide()
+                self.hide('normal')
+                // console.log(data)
+                pdfurl = data['pdfurl']
+                pngurl = data['pngurl']
+                ckt = $(`<div class="row px-sm-5 my-2"><div class="col-4"><strong>Certificate Generated</strong></div><div class="col-8 align-self-center text-break"><a href=${pdfurl} target="=_blank">PDF</a> <a href=${pngurl} download target="=_blank"> PNG</a></div></div>`).hide()
+                ckt.insertAfter('#statusdiv').show('normal')
+                console.log(id)
+                $(`#certificate-generated${id}`).text('Yes')
+                $(`#certificate-number${id}`).html(`<a href="${pdfurl}" target="_blank">View</a>`)
+                // $('#report').append(ckt.show('normal'))
+            },
+            error: (data) => {
+                // test = data
+                self.children('span').hide()
+                try{
+                    message = data['responseJSON']['message']
+                }
+                catch(err){
+                    message = 'Something went wrong kindly contact admin.'
+                }
+                message = $(`<div class="text-danger text-center px-sm-5 mt-2">${message}</div>`)
+                message.insertAfter('#statusdiv').show('normal')
+            }
+        })
+    }
+</script>
+{% endblock content %}
