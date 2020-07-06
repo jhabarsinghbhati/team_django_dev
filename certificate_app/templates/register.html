@@ -6,6 +6,9 @@
 	<form method="POST" id='register' class='shadow'>
 		{% csrf_token %}
 		{{ form.as_p }}		
-		<input type="submit" name="Register" value='Register' class='px-3 mt-3 btn btn-outline-primary'>
+		<input type="submit" name="Register" value='Register' class='form-control px-3 mt-3 btn btn-primary'>
+		<a href="{% url 'certificate_app:login' %}" class='btn btn-warning mt-3  form-control'>Login</a>
+		<small class='font-italic'>If you already have account </small>
 	</form>
+
 {% endblock %}

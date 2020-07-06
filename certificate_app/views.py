@@ -32,9 +32,9 @@ def register_user(request):
     ''' registration of interns '''
     if request.user.is_authenticated:
             if UserProfile.objects.all().filter(user=request.user):
-                if UserProfile.objects.all().filter(user=request.user).first().is_admin:
-                    return redirect(reverse('certificate_app:mentor'))
-                return redirect(reverse('certificate_app:personal_detail'))
+                    return redirect(reverse('certificate_app:personal_detail'))
+            elif request.user.is_superuser or get_user_model().is_irscadmin:
+                return redirect(reverse('certificate_app:mentor'))
     # delete inactive user
     # form = UserForm(None)
     form = InternForm(None)
@@ -68,9 +68,9 @@ def login(request):
     ''' login user '''
     if request.user.is_authenticated:
             if UserProfile.objects.all().filter(user=request.user):
-                if UserProfile.objects.all().filter(user=request.user).first().is_admin:
-                    return redirect(reverse('certificate_app:mentor'))
-                return redirect(reverse('certificate_app:personal_detail'))
+                    return redirect(reverse('certificate_app:personal_detail'))
+            elif request.user.is_superuser or get_user_model().is_irscadmin:
+                return redirect(reverse('certificate_app:mentor'))
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -156,7 +156,7 @@ def register_token(request, key):
     profile = Profile.objects.all().filter(activation_key=key).first()
 
     if profile:
-        profile = Profile.objects.all().filter(activation_key=key).first()
+        profile = Profile.objects.all().filter(activation_key=key).first()  
         name = profile.intern
         welcoming_message(name)
         print(profile.intern)
@@ -171,9 +171,9 @@ def register_token(request, key):
 def forgot_password(request):
     if request.user.is_authenticated:
             if UserProfile.objects.all().filter(user=request.user):
-                if UserProfile.objects.all().filter(user=request.user).first().is_admin:
-                    return redirect(reverse('certificate_app:mentor'))
-                return redirect(reverse('certificate_app:personal_detail'))
+                    return redirect(reverse('certificate_app:personal_detail'))
+            elif request.user.is_superuser or get_user_model().is_irscadmin:
+                return redirect(reverse('certificate_app:mentor'))
     ''' forgot password logic '''
     if request.POST.get('email'):
         if get_user_model().objects.all().filter(email=request.POST.get('email')).first():
@@ -187,9 +187,10 @@ def forgot_password(request):
 def forgot_password_confirm(request, key):
     if request.user.is_authenticated:
             if UserProfile.objects.all().filter(user=request.user):
-                if UserProfile.objects.all().filter(user=request.user).first().is_admin:
-                    return redirect(reverse('certificate_app:mentor'))
-                return redirect(reverse('certificate_app:personal_detail'))
+                if not UserProfile.objects.all().filter(user=request.user).first().is_admin:
+                    return redirect(reverse('certificate_app:personal_detail'))
+            elif request.user.is_superuser or get_user_model().is_irscadmin:
+                return redirect(reverse('certificate_app:mentor'))
 
     profile = Profile.objects.all().filter(activation_key=key).first()
     print("######################\n")
