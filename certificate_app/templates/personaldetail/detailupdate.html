@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<nav class="bg-light">
+    <ul class="nav nav-tabs px-5 pt-4">
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'certificate_app:personal_detail' %}">Personal Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'certificate_app:project' %}">Projects Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'certificate_app:report' %}">Report Details</a>
+        </li>
+        <div class="ml-auto d-flex">
+            <li class="nav-item px-1"><strong class="nav-link">Hi {{request.user.userprofile.get_full_name}}</strong>
+            </li>
+            <li class="nav-item px-1"><a class="nav-link" href="{% url 'logout' %}">signout</a></li>
+        </div>
+    </ul>
+</nav>
+<div class="container my-3">
+    <div class="mx-auto" style="max-width: 620px;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3 row">
+                {{form.ph_contact_no.errors}}
+                <label for="{{ form.id_ph_contact_no.id_for_label }}" class="col-sm-3 col-form-label">Phone Contact
+                    Number:</label>
+                <div class="col-sm-9">
+                    {{form.ph_contact_no}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.whatsapp_no.errors}}
+                <label for="{{ form.id_whatsapp_no.id_for_label }}" class="col-sm-3 col-form-label">WhatsApp
+                    number:</label>
+                <div class="col-sm-9">
+                    {{form.whatsapp_no}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.pan_number.errors}}
+                <label for="{{ form.id_pan_number.id_for_label }}" class="col-sm-3 col-form-label">Pan number:</label>
+                <div class="col-sm-9">
+                    {{form.pan_number}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.aadhaar.errors}}
+                <label for="{{ form.id_aadhaar.id_for_label }}" class="col-sm-3 col-form-label">Aadhaar:</label>
+                <div class="col-sm-9">
+                    {{form.aadhaar}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.emergency_contact_no.errors}}
+                <label for="{{ form.id_emergency_contact_no.id_for_label }}" class="col-sm-3 col-form-label">Emergency
+                    contact no:</label>
+                <div class="col-sm-9">
+                    {{form.emergency_contact_no}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.bank_account_no.errors}}
+                <label for="{{ form.id_bank_account_no.id_for_label }}" class="col-sm-3 col-form-label">Bank account
+                    no:</label>
+                <div class="col-sm-9">
+                    {{form.bank_account_no}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.ifsc_code.errors}}
+                <label for="{{ form.id_ifsc_code.id_for_label }}" class="col-sm-3 col-form-label">Ifsc code:</label>
+                <div class="col-sm-9">
+                    {{form.ifsc_code}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.dob.errors}}
+                <label for="{{ form.id_dob.id_for_label }}" class="col-sm-3 col-form-label">Dob:</label>
+                <div class="col-sm-9">
+                    {{form.dob}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.permanent_address.errors}}
+                <label for="{{ form.id_permanent_address.id_for_label }}" class="col-sm-3 col-form-label">Permanent
+                    address:</label>
+                <div class="col-sm-9">
+                    {{form.permanent_address}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.current_address.errors}}
+                <label for="{{ form.id_current_address.id_for_label }}" class="col-sm-3 col-form-label">Current
+                    address:</label>
+                <div class="col-sm-9">
+                    {{form.current_address}}
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                {{form.biometric_id_number.errors}}
+                <label for="{{ form.id_biometric_id_number.id_for_label }}" class="col-sm-3 col-form-label">Biometric id
+                    number:</label>
+                <div class="col-sm-9">
+                    {{form.biometric_id_number}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.project.errors}}
+                <label for="{{ form.id_project.id_for_label }}" class="col-sm-3 col-form-label">Project
+                    :</label>
+                <div class="col-sm-9">
+                    {{form.project}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.profile.errors}}
+                <label for="{{ form.id_profile.id_for_label }}" class="col-sm-3 col-form-label">Profile
+                    :</label>
+                <div class="col-sm-9">
+                    {{form.profile}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.type_of_internship.errors}}
+                <label for="{{ form.id_type_of_internship.id_for_label }}" class="col-sm-3 col-form-label">Type of
+                    Internship
+                    :</label>
+                <div class="col-sm-9">
+                    {{form.type_of_internship}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.internship_tenure.errors}}
+                <label for="{{ form.id_internship_tenure.id_for_label }}" class="col-sm-3 col-form-label">Internship
+                    tenure:</label>
+                <div class="col-sm-9">
+                    {{form.internship_tenure}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.resume.errors}}
+                <label for="{{ form.id_resume.id_for_label }}" class="col-sm-3 col-form-label">Resume:</label>
+                <div class="col-sm-9">
+                    {{form.resume}}
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">submit</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

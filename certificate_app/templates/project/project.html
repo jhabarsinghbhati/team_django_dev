@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<nav class="bg-light">
+    <ul class="nav nav-tabs px-5 pt-4">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'certificate_app:personal_detail' %}">Personal Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'certificate_app:project' %}">Projects Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'certificate_app:report' %}">Report Details</a>
+        </li>
+        <div class="ml-auto d-flex">
+            <li class="nav-item px-1"><strong class="nav-link">Hi {{request.user.userprofile.get_full_name}}</strong>
+            </li>
+            <li class="nav-item px-1"><a class="nav-link" href="{% url 'logout' %}">signout</a></li>
+        </div>
+    </ul>
+</nav>
+<div class="container my-3">
+    {% if request.user.project %}
+    <div class="bg-light p-md-4 p-2">
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Profile</strong></div>
+            <div class="col-8 align-self-center">
+                {{project.profile}}
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Project Worked on</strong></div>
+            <div class="col-8 align-self-center">
+                {{project.project_worked_on}}
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Status</strong></div>
+            <div class="col-8 align-self-center">
+                {{project.status}}
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Tenure</strong></div>
+            <div class="col-8 align-self-center">
+                {{project.tenure}}
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Joining Date</strong></div>
+            <div class="col-8 align-self-center">
+                {{project.joining_date}}
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>End Date</strong></div>
+            <div class="col-8 align-self-center">
+                {{project.end_date}}
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Upload Traker Link</strong></div>
+            <div class="col-8 align-self-center">
+                <a href="{{project.upload_traker_link}}" target="_blank">{{project.upload_traker_link}}</a>
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Details of Work done</strong></div>
+            <div class="col-8 align-self-center">
+                {{project.detail_of_work}}
+            </div>
+        </div>
+        <div class="row px-sm-5 my-2">
+            <div class="col-4"><strong>Alotted Mentor / Team Leader</strong></div>
+            <div class="col-8 align-self-center">
+                {{project.mentor_or_leader}}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="mx-auto" style="max-width: 620px;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3 row">
+                {{form.profile.errors}}
+                <label for="{{ form.id_profile.id_for_label }}" class="col-sm-3 col-form-label">Profile
+                    :</label>
+                <div class="col-sm-9">
+                    {{form.profile}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.project_worked_on.errors}}
+                <label for="{{ form.id_project_worked_on.id_for_label }}" class="col-sm-3 col-form-label">Project worked
+                    on:</label>
+                <div class="col-sm-9">
+                    {{form.project_worked_on}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.status.errors}}
+                <label for="{{ form.id_status.id_for_label }}" class="col-sm-3 col-form-label">Status:</label>
+                <div class="col-sm-9">
+                    {{form.status}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.tenure.errors}}
+                <label for="{{ form.id_tenure.id_for_label }}" class="col-sm-3 col-form-label">Tenure:</label>
+                <div class="col-sm-9">
+                    {{form.tenure}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.joining_date.errors}}
+                <label for="{{ form.id_joining_date.id_for_label }}" class="col-sm-3 col-form-label">Joining
+                    date:</label>
+                <div class="col-sm-9">
+                    {{form.joining_date}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.end_date.errors}}
+                <label for="{{ form.id_end_date.id_for_label }}" class="col-sm-3 col-form-label">End
+                    date:</label>
+                <div class="col-sm-9">
+                    {{form.end_date}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.upload_traker_link.errors}}
+                <label for="{{ form.id_upload_traker_link.id_for_label }}" class="col-sm-3 col-form-label">Traker
+                    Link:</label>
+                <div class="col-sm-9">
+                    {{form.upload_traker_link}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.detail_of_work.errors}}
+                <label for="{{ form.id_detail_of_work.id_for_label }}" class="col-sm-3 col-form-label">Detail of worked
+                    done:</label>
+                <div class="col-sm-9">
+                    {{form.detail_of_work}}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                {{form.mentor_or_leader.errors}}
+                <label for="{{ form.id_mentor_or_leader.id_for_label }}" class="col-sm-3 col-form-label">Mentor or Team
+                    Leader:</label>
+                <div class="col-sm-9">
+                    {{form.mentor_or_leader}}
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">submit</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}
