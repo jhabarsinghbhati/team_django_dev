@@ -6,7 +6,9 @@ from django.contrib.auth import get_user_model
 import time
 from django.core.mail import send_mail
 from django.conf import settings
-
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import EmailMessage
 
 def delete_inactive(email):
     users = get_user_model().objects.all().filter(email=email).first()
@@ -72,17 +74,37 @@ def send_email(name, id, email, forgot_password=False):
         subject = 'Change Password'
         # user = User.objects.all().filter(email=email).first()
         # token = Profile.objects.all().filter(user=user).first().activation_key
-        body = f'Click On The Link To Change Your Password \n\n {url}/{token} \n\n URL Valid only for 1 hour'
+        html_message = render_to_string('mail/forgot.html', {'name': name, 'url': url+'/'+token })
+        
+        # body = f'Click On The Link To Change Your Password \n\n {url}/{token} \n\n URL Valid only for 1 hour'
     else:
         url = settings.TOKEN_URL
-        body = f'Welcome {name} onboard ! Your registration Id is {id}. sign in with {email} and set password \n\n {url}/{token}'
         subject = "Email Verification"
+        html_message = render_to_string('mail/register.html', {'name': name, 'id': id, 'email': email, 'url': url+'/'+token})
+        # body = strip_tags(html_message)
 
+    # send_mail(
+    #     subject,
+    #     body,
+    #     settings.EMAIL,
+    #     [email],
+    #     fail_silently=False,
+    # )
+    message = EmailMessage(subject, html_message, settings.EMAIL, [email])
+    message.content_subtype = 'html' # this is required because there is no plain text email message
+    message.send()
+
+
+
+def welcoming_message(user):
+    subject = "Thank You For Registration"
+    html_message = render_to_string('mail/thanking.html', {'name': user})
+    body = strip_tags(html_message)
     send_mail(
         subject,
         body,
         settings.EMAIL,
-        [email],
+        [user.user.email],
         fail_silently=False,
     )
 

@@ -18,7 +18,7 @@ from .forms import InternForm
 from django.conf import settings
 # import smtplib
 import threading
-from .functions import send_email, save_user, delete_inactive, generate_token, delete_user_inactive, change_token, get_intern
+from .functions import send_email, save_user, delete_inactive, generate_token, delete_user_inactive, change_token, get_intern, welcoming_message
 import threading
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
@@ -156,6 +156,9 @@ def register_token(request, key):
     profile = Profile.objects.all().filter(activation_key=key).first()
 
     if profile:
+        profile = Profile.objects.all().filter(activation_key=key).first()
+        name = profile.intern
+        welcoming_message(name)
         print(profile.intern)
         Profile.objects.all().filter(activation_key=key).update(is_active=True)
         Profile.objects.all().filter(activation_key=key).update(activation_key=generate_token())
